@@ -17,7 +17,7 @@ fn try_read(gpio_number: u32) -> Option<Reading> {
         return final_result;
     }
     for data in all_data.windows(40) {
-        let result = Reading::from_binary_vector(&data);
+        let result = Reading::from_binary_vector(data);
         match result {
             Ok(reading) => {
                 final_result = Some(reading);
@@ -33,14 +33,21 @@ fn try_read(gpio_number: u32) -> Option<Reading> {
 
 fn main() {
     let mut args = std::env::args();
-    let gpio_number = args.nth(1).unwrap_or("4".to_string()).parse().unwrap(); // GPIO4  (7)
+    let gpio_number = args
+        .nth(1)
+        .unwrap_or_else(|| "4".to_string())
+        .parse()
+        .unwrap(); // GPIO4  (7)
     let sleep_time = time::Duration::from_secs(5);
+
     loop {
         println!(
             "Sleeping for another {:?}, to be sure that device is ready",
             sleep_time
         );
+
         thread::sleep(sleep_time);
+
         match try_read(gpio_number) {
             Some(reading) => println!("Reading: {:?}", reading),
             None => println!("Unable to get the data"),

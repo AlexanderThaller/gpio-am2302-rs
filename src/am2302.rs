@@ -43,14 +43,15 @@ impl Reading {
         // let check_sum: u8 = bytes[..4].iter().sum();
         let check_sum: u8 = bytes[..4]
             .iter()
-            .fold(0 as u8, |result, &value| result.overflowing_add(value).0);
+            .fold(0_u8, |result, &value| result.overflowing_add(value).0);
         if check_sum != bytes[4] {
             return Err(CreationError::ParityBitMismatch);
         }
 
         let raw_humidity: u16 = (bytes[0] as u16) * 256 + bytes[1] as u16;
         let raw_temperature: i16 = if bytes[2] >= 128 {
-            bytes[3] as i16 * -1
+            let value = bytes[3] as i16;
+            -value
         } else {
             (bytes[2] as i16) * 256 + bytes[3] as i16
         };
@@ -58,10 +59,10 @@ impl Reading {
         let humidity: f32 = raw_humidity as f32 / 10.0;
         let temperature: f32 = raw_temperature as f32 / 10.0;
 
-        if temperature > 81.0 || temperature < -41.0 {
+        if !(-41.0..=81.0).contains(&temperature) {
             return Err(CreationError::OutOfSpecValue);
         }
-        if humidity < 0.0 || humidity > 99.9 {
+        if !(0.0..=99.9).contains(&humidity) {
             return Err(CreationError::OutOfSpecValue);
         }
 
