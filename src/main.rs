@@ -33,7 +33,7 @@ fn try_read(gpio_number: u32) -> Option<Reading> {
 
 fn main() {
     let mut args = std::env::args();
-    let gpio_number = args.nth(0).unwrap_or("4".to_string()).parse().unwrap(); // GPIO4  (7)
+    let gpio_number = args.nth(1).unwrap_or("4".to_string()).parse().unwrap(); // GPIO4  (7)
     let sleep_time = time::Duration::from_secs(5);
     for _ in 1..30 {
         println!(
