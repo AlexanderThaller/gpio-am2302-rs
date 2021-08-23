@@ -1,3 +1,5 @@
+cargo-features = ["strip"]
+
 [package]
 name = "gpio-am2302-rs"
 version = "0.1.0"
@@ -5,10 +7,11 @@ authors = ["Nikolai Golub <nikolay.v.golub@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-gpio-cdev = "0.2"
+gpio-cdev = "0.4"
 
 [profile.release]
 codegen-units = 1
 lto = "fat"
 opt-level = 3
 panic = "abort"
+strip = "symbols"
